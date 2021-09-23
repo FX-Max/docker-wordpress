@@ -1,0 +1,29 @@
+version: '3'
+services:
+  wordpress:
+    image: wordpress
+    hostname: wordpress
+    ports:
+      - "9812:80"
+    environment:
+      DB_HOST: ${HOST_MYSQL}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./data/wordpress:/var/www/html
+      - ./logs/php/:/var/log/php/:rw
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:5.7
+    hostname: ${HOST_MYSQL}
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+      - ./my.cnf:/etc/my.cnf
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
